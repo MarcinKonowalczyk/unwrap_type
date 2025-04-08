@@ -10,6 +10,8 @@ Written by Marcin Konowalczyk.
 import sqlite3
 from dataclasses import Field, dataclass, is_dataclass
 from dataclasses import fields as dataclass_fields
+from datetime import datetime
+from decimal import Decimal
 from pathlib import Path
 from typing import Optional
 
@@ -29,7 +31,7 @@ except ImportError as ie:
     else:
         raise ie
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 __all__ = [
     "TYPE_MAP",
@@ -43,6 +45,8 @@ TYPE_MAP: dict[Type, str] = {
     int: "INTEGER",
     str: "TEXT",
     float: "REAL",
+    Decimal: "NUMERIC",
+    datetime: "DATETIME",
 }
 
 DEFAULT_TABLE_NAME = "data"
@@ -133,6 +137,8 @@ def insert(record: object) -> str:
 
     return f"INSERT INTO {{table_name}} ({', '.join(names)}) VALUES ({', '.join(values)});"
 
+
+################################################################################
 
 if __name__ == "__main__":
 

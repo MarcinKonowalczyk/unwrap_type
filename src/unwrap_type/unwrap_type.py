@@ -1,5 +1,5 @@
 """
-Single-file module with for unwrapping Union and Optional types in Python.
+Single-file module with for unwrapping Union and Optional types.
 
 This is a single-file module. It does not depend on any other files or external packages.
 Its version is tracked internally in a separate repository. It can be used as a package,
@@ -9,7 +9,7 @@ bugs/updates ought to be copied back to the original repository.
 Written by Marcin Konowalczyk.
 """
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 __all__ = [
     "Type",

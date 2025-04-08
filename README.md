@@ -8,6 +8,10 @@
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 ![Python versions](https://img.shields.io/badge/python-3.9%20~%203.13-blue)
 
+Single-file module with for unwrapping Union and Optional types into their underlying types.
+
+An example use-case is when trying to automatically convert dataclasses to sqlite statements. See `dataclass_to_sqlite.py` for such an example.
+
 ### Install
 
 Just copy the single-module file to your project and import it.
