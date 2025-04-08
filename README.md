@@ -1,5 +1,6 @@
 # unwrap_type
 
+![GitHub Tag](https://img.shields.io/github/v/tag/MarcinKonowalczyk/unwrap_type?label=version)
 [![Single file](https://img.shields.io/badge/single%20file%20-%20purple)](https://raw.githubusercontent.com/MarcinKonowalczyk/unwrap_type/main/src/unwrap_type/unwrap_type.py)
 [![test](https://github.com/MarcinKonowalczyk/unwrap_type/actions/workflows/test.yml/badge.svg)](https://github.com/MarcinKonowalczyk/unwrap_type/actions/workflows/test.yml)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
