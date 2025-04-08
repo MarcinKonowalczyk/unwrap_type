@@ -9,7 +9,7 @@ bugs/updates ought to be copied back to the original repository.
 Written by Marcin Konowalczyk.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     "Type",
