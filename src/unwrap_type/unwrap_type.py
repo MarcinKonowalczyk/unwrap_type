@@ -1,5 +1,5 @@
 """
-Single-file module with for unwrapping Optional types in Python.
+Single-file module with for unwrapping Union and Optional types in Python.
 
 This is a single-file module. It does not depend on any other files or external packages.
 Its version is tracked internally in a separate repository. It can be used as a package,
@@ -9,50 +9,73 @@ bugs/updates ought to be copied back to the original repository.
 Written by Marcin Konowalczyk.
 """
 
-__version__ = "0.0.2"
+__version__ = "0.1.0"
 
 __all__ = [
+    "Type",
     "unwrap_optional",
+    "unwrap_union",
 ]
 
-from typing import Optional, Union
+from typing import TypeVar, Union, _SpecialForm
 
 try:
     from types import UnionType as _union_type  # type: ignore[attr-defined, unused-ignore]
 except ImportError:
     _union_type = type(Union)  # type: ignore[misc, assignment, unused-ignore]
 
-from typing import _SpecialForm
+_none_type = type(None)
 
 Type = Union[type, _SpecialForm]
+Err = Union[str, None]
+_T = TypeVar("_T")
+Result = tuple[_T, Err]
 
 
-def unwrap_optional(type_: Type) -> tuple[bool, Type]:
-    def get_other_from_args(type_: Union[type, _SpecialForm]) -> type:
-        """Get the other type from a Union type."""
-        if hasattr(type_, "__args__"):
-            for arg in type_.__args__:
-                if arg is not type(None):
-                    return arg  # type: ignore
-        return type(None)
+def _get_args(type_: Type) -> Result[tuple[Type, ...]]:
+    if hasattr(type_, "__args__"):
+        return tuple(type_.__args__), None
+    else:
+        return (), "No __args__ attribute on type"
 
+
+_NOT_A_UNION_TYPE = "Not a union type"
+
+
+def unwrap_union(type_: Type) -> Result[tuple[Type, ...]]:
+    """Unwrap a Union type and return a list of types."""
     if hasattr(type_, "__origin__"):
         # Python 3.8+
         if type_.__origin__ is Union:
-            return True, get_other_from_args(type_)
-        elif type_.__origin__ is Optional:
-            # Optional is implemented as Union[X, NoneType]
-            raise NotImplementedError("Optional is not supported")
+            return _get_args(type_)
         else:
-            raise NotImplementedError(f"Unknown origin type: {type_.__origin__}")
+            return (), f"Unknown origin type: {type_.__origin__}"
     elif isinstance(type_, _union_type):
         # Python 3.10+
         if type_.__class__ is _union_type:
-            return True, get_other_from_args(type_)
+            return _get_args(type_)
         else:
-            raise NotImplementedError(f"Unknown union type: {type_}")
+            return (), f"Unknown union type: {type_}"
+    else:
+        return (), _NOT_A_UNION_TYPE + f": {type_}"
 
-    return False, type_
+
+def unwrap_optional(type_: Type) -> Result[Type]:
+    """Unwrap an Optional type and return the type inside it."""
+
+    types, err = unwrap_union(type_)
+    if err:
+        if _NOT_A_UNION_TYPE in err and type_ is _none_type:
+            # Special case for None type.
+            # Optional[None] is a valid type and is its own optional
+            return type_, None
+        return type_, err
+    if len(types) == 2:
+        # Optional is implemented as Union[X, NoneType]
+        for arg in types:
+            if arg is not _none_type:
+                return arg, None
+    return type_, "Not an optional type"
 
 
 __license__ = """
